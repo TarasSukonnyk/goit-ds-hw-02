@@ -1,0 +1,35 @@
+import sqlite3
+
+# Підключення до бази даних SQLite (або створення нової бази даних)
+conn = sqlite3.connect('task_management.db')
+cursor = conn.cursor()
+
+# Створення таблиці users
+cursor.execute('''CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    fullname VARCHAR(100),
+                    email VARCHAR(100) UNIQUE
+                    )''')
+
+# Створення таблиці status
+cursor.execute('''CREATE TABLE IF NOT EXISTS status (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name VARCHAR(50) UNIQUE
+                    )''')
+
+# Створення таблиці tasks
+cursor.execute('''CREATE TABLE IF NOT EXISTS tasks (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    title VARCHAR(100),
+                    description TEXT,
+                    status_id INTEGER,
+                    user_id INTEGER,
+                    FOREIGN KEY(status_id) REFERENCES status(id) ON DELETE CASCADE,
+                    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+                    )''')
+
+# Збереження змін у базі даних
+conn.commit()
+
+# Закриття з'єднання з базою даних
+conn.close()
